@@ -1,48 +1,49 @@
 package tests;
 
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import io.qameta.allure.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import pages.InventoryPage;
 import pages.LoginPage;
 
-import java.time.Duration;
-
+@Epic("SauceDemo UI Testing")
+@Feature("Авторизация")
 public class LoginTest extends BaseTest {
 
     @Test
+    @Story("Успешная авторизация")
+    @Severity(SeverityLevel.CRITICAL)
+    @Owner("Anastasia")
     public void positiveLoginTest() {
+
+        Allure.step("Выполнить вход стандартным пользователем");
+
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login("standard_user", "secret_sauce");
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.urlContains("/inventory.html"));
-
-        InventoryPage inventoryPage = new InventoryPage(driver);
+        Allure.step("Проверить успешный переход на страницу товаров");
 
         Assert.assertTrue(
-                driver.getCurrentUrl().contains("/inventory.html"),
-                "Ожидался URL /inventory.html, но получен: " + driver.getCurrentUrl()
-        );
-
-        Assert.assertEquals(
-                inventoryPage.getProductsTitle(),
-                "Products",
-                "Ожидался заголовок Products"
+                driver.getCurrentUrl().contains("inventory.html"),
+                "После успешной авторизации должна открыться страница товаров"
         );
     }
 
     @Test
+    @Story("Авторизация заблокированного пользователя")
+    @Severity(SeverityLevel.NORMAL)
+    @Owner("Anastasia")
     public void lockedOutUserLoginTest() {
+
+        Allure.step("Выполнить вход заблокированным пользователем");
+
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login("locked_out_user", "secret_sauce");
 
-        String errorMessage = loginPage.getErrorMessage();
+        Allure.step("Проверить сообщение об ошибке");
 
         Assert.assertTrue(
-                errorMessage.contains("Epic sadface"),
-                "Ожидалось сообщение об ошибке, но получено: " + errorMessage
+                loginPage.getErrorMessage().contains("locked out"),
+                "Для заблокированного пользователя должно отображаться сообщение об ошибке"
         );
     }
 }

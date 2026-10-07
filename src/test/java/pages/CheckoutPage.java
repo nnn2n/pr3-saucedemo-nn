@@ -8,18 +8,27 @@ public class CheckoutPage extends BasePage {
     private final By firstNameField = By.id("first-name");
     private final By lastNameField = By.id("last-name");
     private final By postalCodeField = By.id("postal-code");
+
     private final By continueButton = By.id("continue");
     private final By finishButton = By.id("finish");
 
-    private final By productName = By.cssSelector(".inventory_item_name");
-    private final By totalLabel = By.cssSelector(".summary_total_label");
-    private final By completeHeader = By.cssSelector(".complete-header");
+    private final By productName =
+            By.cssSelector("[data-test='inventory-item-name']");
+
+    private final By totalLabel = By.cssSelector("[data-test='total-label']");
+
+    private final By completeHeader =
+            By.cssSelector(".complete-header");
 
     public CheckoutPage(WebDriver driver) {
         super(driver);
     }
 
-    public void fillCustomerData(String firstName, String lastName, String postalCode) {
+    public void fillCustomerData(
+            String firstName,
+            String lastName,
+            String postalCode) {
+
         type(firstNameField, firstName);
         type(lastNameField, lastName);
         type(postalCodeField, postalCode);
